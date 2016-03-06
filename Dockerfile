@@ -3,15 +3,21 @@
 FROM debian:jessie
 
 EXPOSE 5900
+EXPOSE 52199
 
 RUN wget -q "http://dist.jriver.com/mediacenter@jriver.com.gpg.key" -O- \
-	| sudo apt-key add - \
+	| apt-key add - \
  && wget http://dist.jriver.com/latest/mediacenter/mediacenter21jessie.list -O \
 	/etc/apt/sources.list.d/mediacenter21.list
 
 RUN apt-get update && apt-get install -y \
 	mediacenter21 \
-	xrdp \
+	tightvncserver \
  && rm -rf /var/lib/apt/lists/*
 
-CMD ["mediacenter21","\mediaserver"] 
+RUN echo "jriver" | tightvncserver -f > $HOME/.vnc/passwd \
+	&& chmod 600 $HOME/.vnc/passwd
+
+COPY StartMC21.sh /etc/
+
+CMD ["StartMC21.sh"] 
