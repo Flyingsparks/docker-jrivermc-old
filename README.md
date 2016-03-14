@@ -30,7 +30,7 @@ docker run -d \
 
 It is based on debian:jessie with ssh removed, for shell access whilst the container is running do `docker exec -it jriver /bin/bash -l`.
 
-This container uses openbox as a light weight windows manager. JRiver starts minimised with the /mediaserver switch. Right click to show existing windows.
+This container uses openbox as a light weight windows manager. JRiver starts minimised with the `/mediaserver` switch. Right click to show existing windows.
 
 ## To Do
 
