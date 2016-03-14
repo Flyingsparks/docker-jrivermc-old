@@ -3,7 +3,7 @@
 # Initialize variables
 resolution="1024x780x24"
 additional_cmd="mediacenter21 /mediaserver"
-x11vnc_args=""
+x11vnc_args="-forever"
 unixsockonly=0
 
 while getopts "h?r:a:x:fu" opt; do
@@ -51,6 +51,11 @@ $additional_cmd &
 
 # Launch an xterm
 # xterm &
+
+# Set VNC password
+mkdir ~/.vnc
+x11vnc -storepasswd ${vncpass} ~/.vnc/passwd
+
 
 # Without using the -forever flag the container will stop
 # as soon as vncviewer disconnects

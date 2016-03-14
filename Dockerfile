@@ -27,11 +27,6 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 
 
-# Setup a password for vnc
-RUN mkdir ~/.vnc
-RUN x11vnc -storepasswd ${vncpass} ~/.vnc/passwd
-
-
 # Copy script for running vnc desktop in docker
 COPY dockapp-start dockapp-start
 
