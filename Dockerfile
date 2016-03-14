@@ -21,7 +21,6 @@ RUN wget http://dist.jriver.com/latest/mediacenter/mediacenter21jessie.list -O \
 RUN apt-get update && apt-get install -y \
 	mediacenter21 \
 	openbox \
-	smbfs \
 	supervisor \
 	xvfb \
 	x11vnc \
