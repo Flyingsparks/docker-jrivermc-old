@@ -2,6 +2,8 @@
 
 FROM debian:jessie
 
+ENV vncpass=jriver
+
 # Install wget
 RUN apt-get update && apt-get install -y \
 	wget \
@@ -19,6 +21,7 @@ RUN wget http://dist.jriver.com/latest/mediacenter/mediacenter21jessie.list -O \
 RUN apt-get update && apt-get install -y \
 	mediacenter21 \
 	openbox \
+	smbfs \
 	supervisor \
 	xvfb \
 	x11vnc \
@@ -27,7 +30,7 @@ RUN apt-get update && apt-get install -y \
 
 # Setup a password for vnc
 RUN mkdir ~/.vnc
-RUN x11vnc -storepasswd jriver ~/.vnc/passwd
+RUN x11vnc -storepasswd ${vncpass} ~/.vnc/passwd
 
 
 # Copy script for running vnc desktop in docker
@@ -41,7 +44,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expose ports and volumes
 EXPOSE 5900
 EXPOSE 52199
-VOLUME /config /media /music /movies /tv
+VOLUME /media 
 
 
 CMD ["/usr/bin/supervisord"]
