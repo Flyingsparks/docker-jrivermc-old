@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Initialize variables
+resolution="1024x780x24"
+additional_cmd="mediacenter21 /mediaserver"
+x11vnc_args="-forever"
+unixsockonly=0
+
+while getopts "h?r:a:x:fu" opt; do
+    printf " -%s '%s'\n" $OPTION $OPTARG
+    case "$opt" in
+    h|\?)
+        help
+        exit 0
+        ;;
+    r)  resolution=$OPTARG
+        ;;
+    a)  additional_cmd=$OPTARG
+        ;;
+    f)  x11vnc_args+="-forever "
+        ;;
+    u)  unixsockonly=1
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+help() {
+  echo "./dockapp-start [arg...]"
+}
+
+echo "resolution='$resolution'"
+echo "cmd='$cmd'"
+echo "x11vnc_args='$x11vnc_args'"
+echo "leftovers: $@"
+
+# start framebuffer display server
+Xvfb :1 -extension GLX -screen 0 $resolution &
+
+# export DISPLAY or you have to use "DISPLAY=:1 /usr/bin/cmd"
+export DISPLAY=:1
+
+/usr/bin/openbox-session &
+
+# Wait a bit until the X server is ready
+sleep 1
+
+# Launch an additional command in the background
+$additional_cmd &
+
+# Launch an xterm
+# xterm &
+
+# Set VNC password
+mkdir ~/.vnc
+x11vnc -storepasswd ${vncpass} ~/.vnc/passwd
+
+
+# Without using the -forever flag the container will stop
+# as soon as vncviewer disconnects
+#x11vnc -usepw -display :1 -forever
+
+if [ $unixsockonly -eq 0 ]; then
+    x11vnc -usepw -display :1 $x11vnc_args
+else
+    # switch to user app so that the socket gets created
+    # with the correct user:group on the host
+    su app -c"/x11vnc-0.9.13/x11vnc/x11vnc -unixsockonly /share/x11vnc-socket -display :1 $x11vnc_args"
+fi
+
+# To make sure we can restart this container properly
+# Fatal server error: Server is already active for display 1
+# If this server is no longer running, remove /tmp/.X1-lock
+rm /tmp/.X1-lock
