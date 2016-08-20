@@ -40,4 +40,5 @@ This container uses openbox as a light weight windows manager. JRiver starts min
 
 ## Version Log
 
++ **20.08.16:** Updating to JRiver Media Center 22. Final release with JRiver 21 is tagged 21-final
 + **14.03.16:** Initial release. 
